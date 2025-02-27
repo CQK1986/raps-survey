@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>类风湿关节炎疼痛量表（RAPS）</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .question {
+            margin: 15px 0;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        label {
+            display: block;
+            margin: 8px 0;
+        }
+        select {
+            padding: 5px;
+            margin-left: 10px;
+            width: 80px;
+        }
+        input {
+            padding: 5px;
+            width: 150px;
+        }
+        #totalScore {
+            font-size: 18px;
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        button {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #1976D2;
+        }
+    </style>
+</head>
+<body>
+    <div class="section">
+        <h2>类风湿关节炎疼痛量表（RAPS）</h2>
+        <div class="question">
+            <label>姓名：</label>
+            <input type="text" id="patientName" placeholder="请输入姓名">
+        </div>
+        <div class="question">
+            <label>年龄：</label>
+            <input type="number" id="patientAge" placeholder="请输入年龄" maxlength="3">
+        </div>
+        <p><strong>指导语：</strong>请根据过去一周的感受，为每个项目选择评分（0=从不，6=总是）：</p>
+        
+        <div id="questions">
+            <!-- 问题动态生成 -->
+        </div>
+
+        <div class="section">
+            <p>总分：<span id="totalScore">0</span></p>
+            <button onclick="calculateTotal()">计算总分</button>
+            <button onclick="window.print()">打印页面</button>
+        </div>
+    </div>
+
+    <script>
+        // 量表问题列表（共24项）
+        const questions = [
+            "我的疼痛是啮咬感的。",
+            "我的疼痛是酸痛的。",
+            "我会用“令人筋疲力尽”来形容我的疼痛。",
+            "我的疼痛是烦人的。",
+            "我持续感到疼痛。",
+            "我的疼痛是规律性发作的。",
+            "我至少有一个关节肿胀。",
+            "我早晨关节僵硬超过1小时。",
+            "我至少有一个关节在活动时疼痛。",
+            "因疼痛，我无法完成日常活动。",
+            "疼痛干扰了我的睡眠。",
+            "除了服用药物，我无法通过其他方法缓解疼痛。",
+            "我的疼痛是灼烧感的。",
+            "我会通过保护关节来减轻疼痛。",
+            "我会因为疼痛而绷紧身体。",
+            "我的疼痛是搏动性的（一跳一跳的）。",
+            "我的疼痛是尖锐的。",
+            "我认为我的疼痛很严重。",
+            "休息后我的关节感到僵硬。",
+            "我的关节有发热感。",
+            "疼痛让我感到焦虑。",
+            "我的疼痛是刺痛感的。",
+            "我觉得疼痛无法控制。",
+            "我对控制疼痛感到无助。"
+        ];
+
+        // 动态生成问题
+        const container = document.getElementById("questions");
+        questions.forEach((text, index) => {
+            const div = document.createElement("div");
+            div.className = "question";
+            div.innerHTML = `
+                <p>${index+1}. ${text}</p>
+                <label>
+                    评分：
+                    <select id="q${index+1}">
+                        ${Array.from({length:7}, (_,i) => `<option value="${i}">${i}</option>`).join('')}
+                    </select>
+                </label>
+            `;
+            container.appendChild(div);
+        });
+
+        // 计算总分
+        function calculateTotal() {
+            let total = 0;
+            for(let i=1; i<=24; i++) {
+                total += parseInt(document.getElementById(`q${i}`).value);
+            }
+            document.getElementById("totalScore").textContent = total;
+        }
+
+        // 输入变化时自动更新总分
+        document.querySelectorAll('select').forEach(select => {
+            select.addEventListener('change', calculateTotal);
+        });
+    </script>
+</body>
+</html>
